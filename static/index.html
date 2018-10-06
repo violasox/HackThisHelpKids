@@ -23,8 +23,8 @@
             <div class="text-center" v-if="substate == 1">
                 <h1>Hope you're feeling well today! :)</h1>
                 <h3>No more medicine today!</h3>
+                <a href="#" class="btn btn-primary" v-on:click="start_load">Load</a>
             </div>
-            <a href="#" class="btn btn-primary" v-on:click="start_load">Load</a>
         </div>
 
         <div id="dispense" v-if="system_state == 'dispense'">
