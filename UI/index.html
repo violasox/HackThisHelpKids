@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pillbox</title>
+    <script src="vue.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-theme.min.css">
+    <style type="text/css">
+        .wide {
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="app">
+        <div id="wait" v-if="system_state == 'wait'">
+            <div class="text-center" v-if="substate == 0 && time_til_meds > 0">
+                <h1>Hope you're feeling well today! :)</h1>
+                <h3>Your next medication is in {{time_til_meds}} <span v-if="time_til_meds == 1">minute</span><span v-else>minutes</span></h3>
+            </div>
+
+            <div class="text-center" v-if="substate == 1">
+                <h1>Hope you're feeling well today! :)</h1>
+                <h3>No more medicine today!</h3>
+            </div>
+            <a href="#" class="btn btn-primary" v-on:click="start_load">Load</a>
+        </div>
+
+        <div id="dispense" v-if="system_state == 'dispense'">
+            <div class="text-center" v-if="substate == 0">
+                <h1>It's time to take your medicine</h1>
+                <a href="#" class="btn btn-success" v-on:click="dispense">I'm ready!</a>
+            </div>
+
+            <div class="text-center" v-if="substate == 1">
+                <h1>Getting your medicine...</h1>
+            </div>
+
+            <div class="text-center" v-if="substate == 2">
+                <h1>Take this pill on with a nice glass of water!</h1>
+                <h2>Check that it looks like a {{medicines[demo_pill].about}}</h2>
+                <a href="#" class="btn btn-success" v-on:click="finish_dispense">I did!</a>
+            </div>
+        </div>
+
+        <div id="load" v-if="system_state == 'load'">
+            <div class="text-center" v-if="substate == 0">
+                <h1>Passcode</h1>
+                <input type="text" v-model="passcode_field">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 1)">1</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 2)">2</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 3)">3</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 4)">4</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 5)">5</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 6)">6</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 7)">7</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 8)">8</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 9)">9</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <a href="#" class="btn btn-danger wide" v-on:click="passcode_backspace">X</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="#" class="btn btn-success wide" v-on:click="passcode_verify">Unlock</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <script>
+    var correct_passcode = 1234;
+    var app = new Vue({
+        el: '#app',
+        data: {
+            demo_pill: 0,
+
+            system_state: 'wait',
+            substate: 0,
+            time_til_meds: 5,
+            current_index: 0,
+            passcode_field: '',
+            medicines: [
+                {name: 'Advil', about: "small white pill"},
+                {name: 'Advil', about: "small white pill"},
+                {name: 'Advil', about: "small white pill"},
+                {name: 'Advil', about: "small white pill"}
+            ]
+        },
+        methods: {
+            dispense: function(e) {
+                e.preventDefault();
+                this.substate = 1;
+                var self = this;
+                setTimeout(function() {
+                    self.substate = 2;
+                }, 500);
+            },
+            finish_dispense: function(e) {
+                e.preventDefault();
+                // Return to wait screen, but no more today
+                this.substate = 1;
+                this.system_state = 'wait';
+            },
+            start_load: function(e) {
+                e.preventDefault();
+                this.passcode_field = ''
+                this.substate = 0
+                this.system_state = 'load'
+            },
+            passcode_input: function(e, val) {
+                e.preventDefault();
+                this.substate = 0;
+                this.passcode_field += val;
+                console.log(this.passcode_field);
+            },
+            passcode_backspace: function(e) {
+                e.preventDefault();
+                this.passcode_field = this.passcode_field.slice(0, -1);
+            },
+            passcode_verify: function(e) {
+                e.preventDefault();
+                if ( this.passcode_field == correct_passcode )
+                    this.substate = 1;
+                else {
+                    this.substate = 0;
+                    this.system_state = 'load';
+                }
+                this.passcode_field = '';
+            }
+        }
+    })
+
+    setInterval(function() {
+        app.time_til_meds -= 1;
+        if ( app.time_til_meds <= 0 && app.system_state == "wait" && app.substate == 0 )
+            app.system_state = "dispense";
+    }, 1000);
+    </script>
+</body>
+</html>
