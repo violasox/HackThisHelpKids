@@ -5,7 +5,7 @@ from enum import Enum
 class Pillbox():
     def __init__(self):
         self.pcb = funhouse.PCB()
-        self.servoStates = [ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.CLOSED, ServoState.CLOSED]
+        self.ServoStates = [ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.CLOSED]
         self.initializeServos()
 
     def setServo(self, servoType, position):
@@ -17,30 +17,31 @@ class Pillbox():
         self.setServo(Servo.DRAWER3, ServoState.LOAD)
         self.setServo(Servo.DRAWER4, ServoState.LOAD)
         self.setServo(Servo.PILLIN, ServoState.CLOSED)
-        self.setServo(Servo.PILLOUT, ServoState.CLOSED)
 
     def dispensePill(self, drawer):
-        state = self.servoStates[drawer]
+        state = self.ServoStates[drawer.value]
+        print(state)
+        self.setServo(Servo.LED, ServoState.OPEN)
         if state == ServoState.LOAD:
-            self.setServo(drawer, servoState.SLOT1)
+            self.setServo(drawer, ServoState.SLOT1)
         if state == ServoState.SLOT1:
             self.setServo(drawer, ServoState.SLOT2)
         elif state == ServoState.SLOT2:
             self.setServo(drawer, ServoState.SLOT3)
         elif state == ServoState.SLOT3:
             self.setServo(drawer, ServoState.SLOT4)
-        self.setServo(Servo.PILLOUT, servoState.OPEN)
 
-    def doneDispensePill(self):
-        self.setServo(Servo.PILLOUT, servoState.CLOSED)
+    def lock(self):
+        self.setServo(Servo.PILLIN, ServoState.CLOSED)
+
+    def unlock(self):
+        self.setServo(Servo.PILLIN, ServoState.OPEN)
 
     def loadPill(self, drawer):
-        self.setServo(drawer, servoState.LOAD)
-        self.setServo(Servo.PILLIN, servoState.OPEN)
+        self.setServo(drawer, ServoState.LOAD)
 
-    def doneLoadPill(self):
-        self.setServo(Servo.PILLIN, servoState.CLOSED)
-
+    def lightsOff(self):
+        self.setServo(Servo.LED, ServoState.CLOSED)
 
 class Servo(Enum):
     DRAWER1 = 0
@@ -48,7 +49,7 @@ class Servo(Enum):
     DRAWER3 = 2
     DRAWER4 = 3
     PILLIN = 4
-    PILLOUT = 5
+    LED = 5
 
 class ServoState(Enum):
     LOAD = 180
@@ -56,5 +57,5 @@ class ServoState(Enum):
     SLOT2 = 90
     SLOT3 = 90
     SLOT4 = 90
-    OPEN = 90
-    CLOSED = 90
+    OPEN = 180
+    CLOSED = 0

@@ -1,6 +1,8 @@
 #include <Servo.h>
 
-Servo servo[6];
+Servo servo[5];
+
+int pin_map[6] = {5, 8, 7, 3, 4, 1};
 
 void setup() {
     pinMode(13, OUTPUT);
@@ -10,11 +12,13 @@ void setup() {
     servo[1].attach(21);
     servo[2].attach(22);
     servo[3].attach(23);
-    servo[4].attach(5);
-    servo[5].attach(6);
+    servo[4].attach(6);
+
+    for ( int i = 0; i < 5; i++ )
+        servo[i].write(0);
 
     for ( int i = 0; i < 6; i++ )
-        servo[i].write(90);
+        pinMode(i, OUTPUT);
 }
 
 #define PACKET_START 1337
@@ -32,13 +36,17 @@ void loop() {
             while ( !Serial.available() );
             uint8_t value = Serial.read();
 
-            if ( target_servo >= 0 && target_servo < 6 ) {
-                digitalWrite(13, HIGH);
+            if ( target_servo >= 0 && target_servo < 5 ) {
                 servo[target_servo].write(value);
-                delay(10);
-                digitalWrite(13, LOW);
-
             }
+            else if ( target_servo == 5 ) {
+                for ( int i = 0; i < 6; i++ )
+                    digitalWrite(pin_map[i], value == 0 ? LOW : HIGH);
+            }
+
+            digitalWrite(13, HIGH);
+            delay(10);
+            digitalWrite(13, LOW);
         }
     }
 }

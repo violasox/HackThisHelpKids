@@ -3,7 +3,7 @@ import time
 
 pcb = funhouse.PCB()
 
-testid = 0
+testid = 5
 
 pcb.set(testid, 0)
 time.sleep(1)

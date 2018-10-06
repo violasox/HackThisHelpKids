@@ -7,27 +7,37 @@ app = Flask(__name__)
 
 box = Pillbox()
 
-@app.route('/dispense/:id')
+@app.route('/dispense/<id>')
 def dispense(id):
-    drawer = checkDrawer(id)
+    print('route')
+    drawer = checkDrawer(int(id))
+    print(drawer)
     box.dispensePill(drawer)
+    return ""
 
-@app.route('/load/:id')
+@app.route('/load/<id>')
 def load(id):
-    drawer = checkDrawer(id)
+    drawer = checkDrawer(int(id))
     box.loadPill(drawer)
+    return ""
 
 @app.route('/unlock')
 def unlock():
     box.unlock()
+    return ""
 
 @app.route('/lock')
 def lock():
     box.lock()
+    return ""
+
+@app.route('/lightsOff')
+def lights():
+    box.lightsOff()
 
 @app.route('/')
 def index():
-    redirect('/static/index.html')
+    return redirect('/static/index.html')
 
 def checkDrawer(id):
     if id == 0:

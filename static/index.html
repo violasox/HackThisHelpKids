@@ -10,7 +10,7 @@
             width: 100%;
         }
     </style>
-
+    <script src="jquery.js"></script>
 </head>
 <body>
     <div id="app">
@@ -117,7 +117,7 @@
 
             system_state: 'wait',
             substate: 0,
-            time_til_meds: 5,
+            time_til_meds: 10,
             current_fill_index: 0,
             passcode_field: '',
             medicines: [
@@ -132,6 +132,7 @@
                 e.preventDefault();
                 this.substate = 1;
                 var self = this;
+                $.get('/dispense/'+this.demo_pill);
                 setTimeout(function() {
                     self.substate = 2;
                 }, 500);
@@ -148,6 +149,11 @@
                 this.substate = 0
                 this.system_state = 'load'
             },
+            load_next: function(e) {
+                e.preventDefault();
+                if ( current_fill_index >= 0 && current_fill_index < 4 )
+                    $.get('/load/'+current_fill_index);
+            },
             passcode_input: function(e, val) {
                 e.preventDefault();
                 this.substate = 0;
@@ -160,8 +166,12 @@
             },
             passcode_verify: function(e) {
                 e.preventDefault();
-                if ( this.passcode_field == correct_passcode )
+                if ( this.passcode_field == correct_passcode ) {
                     this.substate = 1;
+                    // Send unlock
+                    $.get('/unlock');
+                    $.get('/load/0');
+                }
                 else {
                     this.substate = 0;
                     this.system_state = 'load';
@@ -170,6 +180,7 @@
             },
             relock: function(e) {
                 e.preventDefault();
+                $.get('/lock');
                 this.system_state = 'wait';
                 this.substate = 0;
             }
