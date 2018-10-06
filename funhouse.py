@@ -7,8 +7,5 @@ class PCB:
         self.usb = serial.Serial('/dev/ttyACM0', baudrate=9600)
 
     def set(self, port: int, value: int) -> None:
-        value /= 127
-        value *= 90
-        value += 90
         cmd = pack('Hbb', 1337, port, value)
         self.usb.write(bytes(cmd))
