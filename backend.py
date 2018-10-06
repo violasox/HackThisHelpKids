@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
+
 from pillbox import Pillbox, Servo
-from flask import Flask
+from flask import Flask, redirect
 
 app = Flask(__name__)
 
@@ -22,7 +24,11 @@ def unlock():
 @app.route('/lock')
 def lock():
     box.lock()
-    
+
+@app.route('/')
+def index():
+    redirect('/static/index.html')
+
 def checkDrawer(id):
     if id == 0:
         drawer = Servo.DRAWER1
@@ -30,7 +36,9 @@ def checkDrawer(id):
         drawer = Servo.DRAWER2
     elif id == 2:
         drawer = Servo.DRAWER3
-    else
+    else:
         drawer = Servo.DRAWER4
-    
-    return drawer    
+
+    return drawer
+
+app.run()

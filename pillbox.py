@@ -5,12 +5,11 @@ from enum import Enum
 class Pillbox():
     def __init__(self):
         self.pcb = funhouse.PCB()
-        self.servoPublisher = rospy.Publisher("servo", Point, queue_size=10);
         self.servoStates = [ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.CLOSED, ServoState.CLOSED]
-        self.initializeServos(self)
+        self.initializeServos()
 
     def setServo(self, servoType, position):
-        self.pcb.set(servoType, position)
+        self.pcb.set(servoType.value, position.value)
 
     def initializeServos(self):
         self.setServo(Servo.DRAWER1, ServoState.LOAD)
@@ -52,10 +51,10 @@ class Servo(Enum):
     PILLOUT = 5
 
 class ServoState(Enum):
-    LOAD = -127
-    SLOT1
-    SLOT2
-    SLOT3
-    SLOT4
-    OPEN
-    CLOSED
+    LOAD = 180
+    SLOT1 = 90
+    SLOT2 = 90
+    SLOT3 = 90
+    SLOT4 = 90
+    OPEN = 90
+    CLOSED = 90

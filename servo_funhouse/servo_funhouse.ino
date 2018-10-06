@@ -28,9 +28,9 @@ void loop() {
         start_pkt_buffer = start_pkt_buffer | temp;
         if ( start_pkt_buffer == PACKET_START ) {
             while ( !Serial.available() );
-            int8_t target_servo = Serial.read();
+            uint8_t target_servo = Serial.read();
             while ( !Serial.available() );
-            int8_t value = Serial.read();
+            uint8_t value = Serial.read();
 
             if ( target_servo >= 0 && target_servo < 6 ) {
                 digitalWrite(13, HIGH);
