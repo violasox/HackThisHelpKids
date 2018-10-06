@@ -1,17 +1,11 @@
-#include <ros.h>
-#include <geometry_msgs/Point.h>
 #include <Servo.h>
 
 Servo servo[6];
 
-void handle_servo(const geometry_msgs::Point& value) {
-    double command = value.y / 127.0;
-    command *= 90;
-    command += 90;
-    servo[(int)value.x].write((int)command);
-}
-
 void setup() {
+    pinMode(13, OUTPUT);
+    Serial.begin(9600);
+
     servo[0].attach(20);
     servo[1].attach(21);
     servo[2].attach(22);
@@ -23,15 +17,25 @@ void setup() {
         servo[i].write(90);
 }
 
+#define PACKET_START 1337
+uint16_t start_pkt_buffer = 0;
+
 void loop() {
-    ros::NodeHandle nh;
-    nh.initNode();
-    ros::Subscriber<geometry_msgs::Point> servosub("/servo", &handle_servo);
+    if ( Serial.available() ) {
+        uint8_t buf = Serial.read();
+        start_pkt_buffer = (uint16_t)start_pkt_buffer >> 8;
+        uint16_t temp = (uint16_t)buf << 8;
+        start_pkt_buffer = start_pkt_buffer | temp;
+        if ( start_pkt_buffer == PACKET_START ) {
+            digitalWrite(13, HIGH);
+            while ( !Serial.available() );
+            int8_t target_servo = Serial.read();
+            while ( !Serial.available() );
+            int8_t value = Serial.read();
 
-    nh.subscribe(servosub);
-
-    while (1) {
-        nh.spinOnce();
-        delay(100);
+            if ( target_servo >= 0 && target_servo < 6 ) {
+                servo[target_servo].write(value);
+            }
+        }
     }
 }

@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
-import rospy
-from geometry_msgs.msg import Point
+import funhouse
 from enum import Enum
 
 class Pillbox():
     def __init__(self):
+        self.pcb = funhouse.PCB()
         self.servoPublisher = rospy.Publisher("servo", Point, queue_size=10);
         self.servoStates = [ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.CLOSED, ServoState.CLOSED]
         self.initializeServos(self)
-        
+
     def setServo(self, servoType, position):
-        servoMessage = Point(servoNum, position)
-        self.servoPublisher.publish(servoMessage)
-        self.servoStates[servoType] = position
+        self.pcb.set(servoType, position)
 
     def initializeServos(self):
         self.setServo(Servo.DRAWER1, ServoState.LOAD)
@@ -43,7 +41,7 @@ class Pillbox():
 
     def doneLoadPill(self):
         self.setServo(Servo.PILLIN, servoState.CLOSED)
-        
+
 
 class Servo(Enum):
     DRAWER1 = 0
