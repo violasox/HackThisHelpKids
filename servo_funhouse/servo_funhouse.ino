@@ -15,7 +15,7 @@ void setup() {
     servo[4].attach(6);
 
     for ( int i = 0; i < 5; i++ )
-        servo[i].write(0);
+        servo[i].write(180);
 
     for ( int i = 0; i < 6; i++ )
         pinMode(i, OUTPUT);

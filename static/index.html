@@ -38,7 +38,7 @@
             </div>
 
             <div class="text-center" v-if="substate == 2">
-                <h1>Take this pill on with a nice glass of water!</h1>
+                <h1>Take this pill with a nice glass of water!</h1>
                 <h2>Check that it looks like a {{medicines[demo_pill].about}}</h2>
                 <a href="#" class="btn btn-success" v-on:click="finish_dispense">I did!</a>
             </div>
@@ -117,7 +117,7 @@
 
             system_state: 'wait',
             substate: 0,
-            time_til_meds: 10,
+            time_til_meds: 2,
             current_fill_index: 0,
             passcode_field: '',
             medicines: [
@@ -136,6 +136,10 @@
                 setTimeout(function() {
                     self.substate = 2;
                 }, 500);
+
+                setTimeout(function() {
+                    $.get('/lightsOff');
+                }, 1000);
             },
             finish_dispense: function(e) {
                 e.preventDefault();

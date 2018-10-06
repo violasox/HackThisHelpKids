@@ -5,10 +5,11 @@ from enum import Enum
 class Pillbox():
     def __init__(self):
         self.pcb = funhouse.PCB()
-        self.ServoStates = [ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.CLOSED]
+        self.ServoStates = [ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.LOAD, ServoState.CLOSED, ServoState.CLOSED]
         self.initializeServos()
 
     def setServo(self, servoType, position):
+        self.ServoStates[servoType.value] = position
         self.pcb.set(servoType.value, position.value)
 
     def initializeServos(self):
@@ -17,6 +18,7 @@ class Pillbox():
         self.setServo(Servo.DRAWER3, ServoState.LOAD)
         self.setServo(Servo.DRAWER4, ServoState.LOAD)
         self.setServo(Servo.PILLIN, ServoState.CLOSED)
+        self.setServo(Servo.LED, ServoState.CLOSED)
 
     def dispensePill(self, drawer):
         state = self.ServoStates[drawer.value]
@@ -53,9 +55,9 @@ class Servo(Enum):
 
 class ServoState(Enum):
     LOAD = 180
-    SLOT1 = 90
-    SLOT2 = 90
-    SLOT3 = 90
-    SLOT4 = 90
+    SLOT1 = 110
+    SLOT2 = 100
+    SLOT3 = 80
+    SLOT4 = 0
     OPEN = 180
     CLOSED = 0

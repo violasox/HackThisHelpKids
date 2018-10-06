@@ -34,6 +34,7 @@ def lock():
 @app.route('/lightsOff')
 def lights():
     box.lightsOff()
+    return ""
 
 @app.route('/')
 def index():
