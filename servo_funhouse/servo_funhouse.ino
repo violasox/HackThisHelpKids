@@ -27,14 +27,17 @@ void loop() {
         uint16_t temp = (uint16_t)buf << 8;
         start_pkt_buffer = start_pkt_buffer | temp;
         if ( start_pkt_buffer == PACKET_START ) {
-            digitalWrite(13, HIGH);
             while ( !Serial.available() );
             int8_t target_servo = Serial.read();
             while ( !Serial.available() );
             int8_t value = Serial.read();
 
             if ( target_servo >= 0 && target_servo < 6 ) {
+                digitalWrite(13, HIGH);
                 servo[target_servo].write(value);
+                delay(10);
+                digitalWrite(13, LOW);
+
             }
         }
     }
