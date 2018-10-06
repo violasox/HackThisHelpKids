@@ -50,49 +50,62 @@
                 <input type="text" v-model="passcode_field">
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 1)">1</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 2)">2</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 3)">3</a>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 4)">4</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 5)">5</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 6)">6</a>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 7)">7</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 8)">8</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <a href="#" class="btn btn-default wide" v-on:click="passcode_input($event, 9)">9</a>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-xs-6">
                             <a href="#" class="btn btn-danger wide" v-on:click="passcode_backspace">X</a>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-xs-6">
                             <a href="#" class="btn btn-success wide" v-on:click="passcode_verify">Unlock</a>
                         </div>
                     </div>
                 </div>
+
             </div>
+            <div class="text-center" v-if="substate == 1">
+                <div v-if="current_fill_index < 4">
+                    <h2>Fill compartment {{current_fill_index+1}} with {{medicines[current_fill_index].name}}</h2>
+                    <h3>{{medicines[current_fill_index].name}} is a {{medicines[current_fill_index].about}}</h3>
+                    <a href="#" class="btn btn-success wide" v-on:click="current_fill_index++">Next</a>
+                </div>
+                <div v-else>
+                    <a href="#" class="btn btn-success wide" v-on:click="relock">Lock</a>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <script>
@@ -105,13 +118,13 @@
             system_state: 'wait',
             substate: 0,
             time_til_meds: 5,
-            current_index: 0,
+            current_fill_index: 0,
             passcode_field: '',
             medicines: [
                 {name: 'Advil', about: "small white pill"},
-                {name: 'Advil', about: "small white pill"},
-                {name: 'Advil', about: "small white pill"},
-                {name: 'Advil', about: "small white pill"}
+                {name: 'Asprin', about: "small white pill"},
+                {name: 'Drugs', about: "small white pill"},
+                {name: 'lolidk', about: "small white pill"}
             ]
         },
         methods: {
@@ -154,6 +167,11 @@
                     this.system_state = 'load';
                 }
                 this.passcode_field = '';
+            },
+            relock: function(e) {
+                e.preventDefault();
+                this.system_state = 'wait';
+                this.substate = 0;
             }
         }
     })
