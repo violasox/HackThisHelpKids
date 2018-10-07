@@ -18,7 +18,7 @@ void setup() {
         servo[i].write(180);
 
     for ( int i = 0; i < 6; i++ )
-        pinMode(i, OUTPUT);
+        pinMode(pin_map[i], OUTPUT);
 }
 
 #define PACKET_START 1337
