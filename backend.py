@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-
 from pillbox import Pillbox, Servo
 from flask import Flask, redirect
 
+# A Flask app so that the UI can call box functionality at the appropriate times
+# Check pillbox.py for function descriptions
 app = Flask(__name__)
-
 box = Pillbox()
 
 @app.route('/dispense/<id>')
